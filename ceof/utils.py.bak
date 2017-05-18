@@ -17,42 +17,42 @@ def scaleEOF(pcs, eofs, scaletype):
     nmodes = pcs.shape[-1]
 
     if scaletype == 'pc_std':
-        print("Normalizing by the pc_std")
+        print "Normalizing by the pc_std"
         for n in range(nmodes):
             fac = (np.absolute(pcs[:,n])).std()
             pcs[:,n] = pcs[:,n]/fac
             eofs[:,n] = eofs[:,n]*fac
 
     elif scaletype == 'pc_median':
-        print("Normalizing by the pc_median")
+        print "Normalizing by the pc_median"
         for n in range(nmodes):
             fac = np.median((np.absolute(pcs[:,n])))
             pcs[:,n] = pcs[:,n]/fac
             eofs[:,n] = eofs[:,n]*fac
 
     elif scaletype == 'pc_max':
-        print("Normalizing by the pc_max")
+        print "Normalizing by the pc_max"
         for n in range(nmodes):
             fac = (np.absolute(pcs[:,n])).max()
             pcs[:,n] = pcs[:,n]/fac
             eofs[:,n] = eofs[:,n]*fac
 
     elif scaletype == 'eof_std':
-        print("Normalizing by the eof_std")
+        print "Normalizing by the eof_std"
         for n in range(nmodes):
             fac = (np.absolute(eofs[:,n])).std()
             eofs[:,n] = eofs[:,n]/fac
             pcs[:,n] = pcs[:,n]*fac
 
     elif scaletype == 'eof_max':
-        print("Normalizing by the eof_max")
+        print "Normalizing by the eof_max"
         for n in range(nmodes):
             fac = (np.absolute(eofs[:,n])).max()
             eofs[:,n] = eofs[:,n]/fac
             pcs[:,n] = pcs[:,n]*fac
 
     else:
-        print("Don't understand the normalization config: %s" % scaletype)
+        print "Don't understand the normalization config: %s" % scaletype
         return
 
     return pcs, eofs
@@ -70,11 +70,11 @@ def ceof_reconstruct(eofs, pcs, nmodes=None):
             "Valid values for modes are: 'all' or an integer."
 
     if nmodes is None:
-        nmodes = list(range(pcs.shape[-1]))
+        nmodes = range(pcs.shape[-1])
     else:
-        nmodes = list(range(nmodes))
+        nmodes = range(nmodes)
 
-    print("Reconstructing from EOF using the modes: %s" % nmodes)
+    print "Reconstructing from EOF using the modes: %s" % nmodes
     T = pcs.shape[-1]
 
     eof_amp = (eofs.real**2 + eofs.imag**2)**0.5
