@@ -68,7 +68,7 @@ def CEOF_2D(data, cfg=None):
     if 'maxnmodes' in cfg:
         nmodes = min(nmodes, cfg['maxnmodes'])
 
-    print("Considering the first %s of %s modes." % (nmodes,len(lambdas)))
+    print "Considering the first %s of %s modes." % (nmodes,len(lambdas))
 
     # ---- Normalize -----------------------------------------------------
     if 'normalize' in  cfg:
@@ -126,12 +126,12 @@ def make_animation(data, eofdata, t, lat, lon, outputfilename, limits = None):
 
     parallels = numpy.arange(-5,20.1,5)
     meridians = numpy.arange(300,340,10)
-    V = list(range(-20, 21, 1))
+    V = range(-20, 21, 1)
     for i in range(len(t)) :
         #fig = plt.figure(figsize=(14,10.5), dpi=100)
         pylab.subplot(211)
         map = Basemap(projection='merc',lat_ts=0,llcrnrlon=LonIni,llcrnrlat=LatIni, urcrnrlon=LonFin, urcrnrlat=LatFin,resolution='l',area_thresh=1000.)
-        X, Y = list(map(*pylab.meshgrid(lon, lat)))
+        X, Y = map(*pylab.meshgrid(lon, lat))
         map.contourf(X,Y, data[i], V)
         plt.colorbar(shrink=0.8)
         map.drawcoastlines()
@@ -142,7 +142,7 @@ def make_animation(data, eofdata, t, lat, lon, outputfilename, limits = None):
         #
         pylab.subplot(212)
         map = Basemap(projection='merc',lat_ts=0,llcrnrlon=LonIni,llcrnrlat=LatIni, urcrnrlon=LonFin, urcrnrlat=LatFin,resolution='l',area_thresh=1000.)
-        X, Y = list(map(*pylab.meshgrid(lon, lat)))
+        X, Y = map(*pylab.meshgrid(lon, lat))
         map.contourf(X,Y, eofdata[i], V)
         plt.colorbar(shrink=0.8)
         map.drawcoastlines()
@@ -153,7 +153,7 @@ def make_animation(data, eofdata, t, lat, lon, outputfilename, limits = None):
         # ----
         filename = str('../tmp/%04d' % i) + '.png'
         plt.savefig(filename, dpi=100)
-        print('Wrote file', filename)
+        print 'Wrote file', filename
         #
         # Clear the figure to make way for the next image.
         #
@@ -177,9 +177,9 @@ def make_animation(data, eofdata, t, lat, lon, outputfilename, limits = None):
     #print "\n\nabout to execute:\n%s\n\n" % ' '.join(command)
     #subprocess.check_call(command)
 
-    print("\n\n The movie was written to 'output.avi'")
+    print "\n\n The movie was written to 'output.avi'"
 
-    print("\n\n You may want to delete *.png now.\n\n")
+    print "\n\n You may want to delete *.png now.\n\n"
     return
 
 
@@ -253,7 +253,7 @@ class CEOF(UserDict):
         from datetime import timedelta
         
         if len((set(numpy.diff(self.data['datetime'])))) !=1:
-            print("Class incomplete. Can't deal with a non regular time series")
+            print "Class incomplete. Can't deal with a non regular time series"
             return
 
         dt=self.data['datetime'][1]-self.data['datetime'][0]
@@ -266,13 +266,13 @@ class CEOF(UserDict):
             output = window_1Dmean_grid(lowpass, ll2/2., method='hann', axis=0)
             output = lowpass - output
 
-            print("ATENTION!!!! Improve this here!!!")
+            print "ATENTION!!!! Improve this here!!!"
             self.halfpower_period = "20-120"
         else:
             ll=(l.days+l.seconds/86400.)/(dt.days+dt.seconds/86400.)
 
             if ll<1:
-                print("This filter will have no effect. Data series have not enough resolution.")
+                print "This filter will have no effect. Data series have not enough resolution."
                 return
 
             lowpass = window_1Dmean_grid(self.data[var],ll/2.,method='hann',axis=0)
@@ -284,12 +284,12 @@ class CEOF(UserDict):
                 output=self.data[var]-(lowpass)
                 #output=self.data[var]-lowpass
             else:
-                print("On function filter, type must be lowpass or highpass")
+                print "On function filter, type must be lowpass or highpass"
 
             halfpower_period = get_halfpower_period(self.data[var],
                     output, dt=dt)
-            print("Filter half window size: %s" % l)
-            print("Half Power Period: %s" % halfpower_period)
+            print "Filter half window size: %s" % l
+            print "Half Power Period: %s" % halfpower_period
             self.halfpower_period = halfpower_period
         
         # ----
@@ -386,10 +386,10 @@ class CEOF(UserDict):
     def go(self):
         var = self.metadata['ceof']['var']
 
-        if ('Lat' not in list(self.keys())) or ('Lon' not in list(self.keys())):
+        if ('Lat' not in self.keys()) or ('Lon' not in self.keys()):
             self.data['Lon'], self.data['Lat'] = numpy.meshgrid(self.data['lon'],self.data['lat'])
         if 'prefilter' in self.metadata:
-            print("Filtering in time")
+            print "Filtering in time"
             if self.metadata['prefilter']['type'] == 'bandpass':
                 self.filter(var,l=self.metadata['prefilter']['l'],type=self.metadata['prefilter']['type'], l2=self.metadata['prefilter']['l2'],)
             else:
@@ -428,12 +428,12 @@ class CEOF(UserDict):
         for n, ind in enumerate(self.grid_index):
             data2D[:, n] = self.data[var][:,ind[0], ind[1]]
 
-        print("Running CEOF_2D()")
+        print "Running CEOF_2D()"
         output = CEOF_2D(data2D, cfg=self.metadata['ceof'])
 
         nmodes = len(output['lambdas'])
 
-        for k in [k for k in list(output.keys()) if k is not 'ceof']:
+        for k in [k for k in output.keys() if k is not 'ceof']:
             self.data[k] = output[k]
 
         self.data['eofs'] = ma.masked_all((J, K, nmodes), dtype='complex128')
@@ -447,7 +447,7 @@ class CEOF(UserDict):
         #    print k, self.data[k].shape, type(self.data[k])
 
         if 'figs' in self.metadata:
-	    print("Creating figures for %s modes" % nmodes)
+	    print "Creating figures for %s modes" % nmodes
             #for nmode in range(5):
             #for n in range(10):
             for n in range(nmodes):

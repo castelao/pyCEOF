@@ -117,7 +117,7 @@ def plot(eof, pc, nmode, varfrac, filename, data, limits=None, cumvarfrac=None):
     map = Basemap(projection='merc', lat_ts=0, llcrnrlon=LonIni,
             llcrnrlat=LatIni, urcrnrlon=LonFin, urcrnrlat=LatFin,
             resolution='l', area_thresh=1000.)
-    X, Y = list(map(*pylab.meshgrid(data['lon'], data['lat'])))
+    X, Y = map(*pylab.meshgrid(data['lon'], data['lat']))
     map.contourf(X, Y, eof_amp*1e2)
     pylab.title("CEOF amplitude")
     cbar = pylab.colorbar()
@@ -129,7 +129,7 @@ def plot(eof, pc, nmode, varfrac, filename, data, limits=None, cumvarfrac=None):
 
     pylab.axes([left+width_eof+margin, bottom + 2*height_pc + 2*margin, width_eof, height_eof])
     map = Basemap(projection='merc',lat_ts=0,llcrnrlon=LonIni,llcrnrlat=LatIni, urcrnrlon=LonFin, urcrnrlat=LatFin,resolution='l',area_thresh=1000.)
-    X, Y = list(map(*pylab.meshgrid(data['lon'],data['lat'])))
+    X, Y = map(*pylab.meshgrid(data['lon'],data['lat']))
     V=[-180, -150, -120, -90, -60, -30, 0, 30, 60, 90, 120, 150, 180]
     #V = range(-180,181,20)
     #import matplotlib.cm as cm
@@ -177,7 +177,7 @@ def plot(eof, pc, nmode, varfrac, filename, data, limits=None, cumvarfrac=None):
     #pylab.grid()
     # ----
     #pylab.show()
-    print("Saving figure %s" % filename)
+    print "Saving figure %s" % filename
     #fig.savefig(filename)
     pylab.savefig(filename)
     pylab.close()
